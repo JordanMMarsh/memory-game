@@ -1,11 +1,23 @@
 import React, { Component } from 'react';
 
 class MemoryTile extends Component {
+  constructor(props){
+    super(props);
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  //If card hasn't already been clicked, send it to parent as a click event
+  handleClick() {
+    if (!this.props.marked) {
+      this.props.handleClick(this.props.index);
+    }
+  }
+
   render() {
     let isMarked = "";
     if (this.props.marked) isMarked = "M";
     return (
-      <div className="MemoryTile" onClick={() => this.props.handleClick(this.props.index)}>
+      <div className="MemoryTile" onClick={this.handleClick}>
         <p>{this.props.value} {isMarked}</p>
       </div>
     );
@@ -13,7 +25,3 @@ class MemoryTile extends Component {
 }
 
 export default MemoryTile;
-
-/*{this.state.tiles.map(function(item, i) {
-  return <MemoryTile index={item[i].index} value={item[i].value} marked={item[i].marked} handleClick={this.handleClick} />;
-})}*/
