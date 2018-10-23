@@ -6,19 +6,21 @@ class MemoryBoard extends Component {
     super(props);
     this.state = {
       tiles: [],
-      numTiles: 12, //default tiles
+      numTiles: 4, //default tiles
       started: false, //has game started
-      marked: false, //true when a card is already marked for matching
+      startingMessage: "Match the pairs to win!",
       score: 0,
       firstCard: "",
       firstCardIndex: "",
       secondCard: "",
-      secondCardIndex: ""
+      secondCardIndex: "",
+      matches: 0
     }
     this.createBoard = this.createBoard.bind(this);
     this.startGame = this.startGame.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.resetCards = this.resetCards.bind(this);
+    this.gameWin = this.gameWin.bind(this);
     this.timer = null;
   }
 
@@ -29,8 +31,16 @@ class MemoryBoard extends Component {
 
   startGame() {
     this.setState({
-      started: true
+      started: true,
+      tiles: [],
+      score: 0,
+      firstCard: "",
+      firstCardIndex: "",
+      secondCard: "",
+      secondCardIndex: "",
+      matches: 0
     });
+    this.createBoard(this.state.numTiles);
   }
 
   //Accept an even number and create a random board of tiles with matching pairs
@@ -85,7 +95,6 @@ class MemoryBoard extends Component {
           currentTiles[i].marked = !currentTiles[i].marked;
           this.setState({
             tiles: currentTiles,
-            marked: true,
             firstCard: currentTiles[i],
             firstCardIndex: i
           });
@@ -110,6 +119,7 @@ class MemoryBoard extends Component {
     }
 }
 
+//Check if two cards have been chosen, then decide if they are a match and what to do after
 componentDidUpdate() {
   if (this.state.firstCard != "" && this.state.secondCard != "") {
     let firstCard = this.state.firstCard;
@@ -118,36 +128,53 @@ componentDidUpdate() {
     let secondCardIndex = this.state.secondCardIndex;
     let currentTiles = this.state.tiles;
     let currentScore = this.state.score;
+    let matches = this.state.matches;
+    let totalMatches = this.state.numTiles / 2;
+    //if a match
     if (currentTiles[firstCardIndex].value == currentTiles[secondCardIndex].value) {
       currentScore += 10;
+      matches++;
     }
     else {
       currentTiles[firstCardIndex].marked = false;
       currentTiles[secondCardIndex].marked = false;
     }
-    this.timer = setTimeout(() => this.resetCards(currentTiles, currentScore), 1000);
+    //if you have won, call game win on delay
+    if (totalMatches == matches) {
+      this.timer = setTimeout(() => this.gameWin(), 1000);
+    }
+    else {
+      //haven't won, reset selected cards after a delay
+      this.timer = setTimeout(() => this.resetCards(currentTiles, currentScore, matches), 1000);
+    }
   }
 }
 
+gameWin() {
+  this.setState({
+    started: false,
+    startingMessage: "You won! Congrats!"
+  });
+  }
+
 
   //Called after X seconds from handleClick to allow user to see selection before resetting
-  resetCards(currentTiles, currentScore) {
+  resetCards(currentTiles, currentScore, matches) {
     this.setState({
       tiles: currentTiles,
-      marked: false,
       firstCard: "",
       firstCardIndex: "",
       secondCard: "",
       secondCardIndex: "",
-      score: currentScore
+      score: currentScore,
+      matches: matches
     });
     clearInterval(this.timer);
   }
 
   render() {
-    let gameStarted = this.state.started;
     let clickMethod = this.handleClick;
-    if (gameStarted) {
+    if (this.state.started) {
     return (
       <div>
       <h2>Score: {this.state.score}</h2><br />
@@ -160,6 +187,7 @@ componentDidUpdate() {
     else {
       return (
         <div>
+        <h2>{this.state.startingMessage}</h2>
         <button onClick={this.startGame}>Start New Game</button>
         </div>
       )
