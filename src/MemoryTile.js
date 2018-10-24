@@ -14,12 +14,20 @@ class MemoryTile extends Component {
   }
 
   render() {
-    let isMarked = "";
-    if (this.props.marked) isMarked = "M";
     return (
-      <div className="MemoryTile" onClick={this.handleClick}>
-        <p>{this.props.value} {isMarked}</p>
+      <div className={this.props.marked ? 'flip-container flip' : 'flip-container'}  onClick={this.handleClick}>
+	     <div className="flipper">
+		     <div className="front">
+         <img className="cardBack" src={this.props.backImage} alt="Back of playing card" />
+		     </div>
+		     <div className="back">
+         <div>
+          <img className="cardFront" src={this.props.frontImage} alt="Front of playing card" />
+         </div>
+		     </div>
+	     </div>
       </div>
+
     );
   }
 }

@@ -14,33 +14,52 @@ class MemoryBoard extends Component {
       firstCardIndex: "",
       secondCard: "",
       secondCardIndex: "",
-      matches: 0
+      matches: 0,
+      value: "",
+      cardImages: ["../images/AC.png","../images/2C.png","../images/3C.png","../images/4C.png","../images/5C.png","../images/6C.png","../images/7C.png","../images/8C.png","../images/9C.png","../images/10C.png","../images/JC.png","../images/QC.png","../images/KC.png","../images/AS.png","../images/2S.png","../images/3S.png","../images/4S.png","../images/5S.png","../images/6S.png","../images/7S.png","../images/8S.png","../images/9S.png","../images/10S.png","../images/JS.png",
+      "../images/QS.png","../images/KS.png","../images/AD.png","../images/2D.png","../images/3D.png","../images/4D.png","../images/5D.png","../images/6D.png","../images/7D.png","../images/8D.png","../images/9D.png","../images/10D.png","../images/JD.png","../images/QD.png","../images/KD.png","../images/AH.png","../images/2H.png","../images/3H.png","../images/4H.png","../images/5H.png","../images/6H.png","../images/7H.png","../images/8H.png","../images/9H.png","../images/10H.png",
+      "../images/JH.png","../images/QH.png","../images/KH.png"],
+      cardBack: ["../images/purple_back.png","../images/blue_back.png","../images/gray_back.png","../images/red_back.png","../images/yellow_back.png"],
+      backIndex: 0
     }
     this.createBoard = this.createBoard.bind(this);
     this.startGame = this.startGame.bind(this);
+    this.handleChange = this.handleChange.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.resetCards = this.resetCards.bind(this);
     this.gameWin = this.gameWin.bind(this);
     this.timer = null;
   }
 
-  //Create starting board state
-  componentWillMount() {
-    this.createBoard(this.state.numTiles);
+  handleChange(e) {
+    this.setState({
+      value: e.target.value
+    });
   }
 
-  startGame() {
-    this.setState({
-      started: true,
-      tiles: [],
-      score: 0,
-      firstCard: "",
-      firstCardIndex: "",
-      secondCard: "",
-      secondCardIndex: "",
-      matches: 0
-    });
-    this.createBoard(this.state.numTiles);
+  startGame(e) {
+    e.preventDefault();
+    if (isNaN(this.state.value) || this.state.value < 2 || this.state.value > 13)
+    {
+      this.setState({
+        value: "",
+        startingMessage: "Please enter a number between 2 and 13."
+      });
+    }
+    else {
+      let numTiles = parseInt(this.state.value) * 2;
+      this.setState({
+        tiles: [],
+        numTiles: numTiles,
+        score: 0,
+        firstCard: "",
+        firstCardIndex: "",
+        secondCard: "",
+        secondCardIndex: "",
+        matches: 0
+      });
+      this.createBoard(numTiles);
+    }
   }
 
   //Accept an even number and create a random board of tiles with matching pairs
@@ -49,11 +68,12 @@ class MemoryBoard extends Component {
     let newTiles = [];
     let randomNumbers = [];
 
+    let cardBack = Math.floor(Math.random() * (this.state.cardBack.length - 1 + 1))
     //Create pairs of random numbers and push pairs to random number array
     for (let h = 0; h < numberTiles / 2; h++) {
-      let randNumber = Math.floor(Math.random() * 100);
+      let randNumber = Math.floor(Math.random()*(this.state.cardImages.length-1+1));
       while (randomNumbers.indexOf(randNumber) != -1) {
-        randNumber = Math.floor(Math.random() * 100);
+        randNumber = Math.floor(Math.random()*(this.state.cardImages.length-1+1));
       }
       randomNumbers.push(randNumber);
       randomNumbers.push(randNumber);
@@ -62,7 +82,7 @@ class MemoryBoard extends Component {
     //Assign each tile in the array an index, a value where every two tiles is a pair, and a default value
     for (let i = 0; i < numberTiles; i++)
     {
-      newTiles.push({index: i, value: randomNumbers[i], marked: false});
+      newTiles.push({index: i, value: randomNumbers[i], marked: false, cardBack: cardBack});
     }
 
     //Shuffle array using Fisher-Yates Shuffle
@@ -80,8 +100,10 @@ class MemoryBoard extends Component {
     }
 
     this.setState({
+        started: true,
         tiles: newTiles,
         numTiles: numberTiles,
+        backIndex: cardBack
     });
   }
 
@@ -141,25 +163,27 @@ componentDidUpdate() {
     }
     //if you have won, call game win on delay
     if (totalMatches == matches) {
-      this.timer = setTimeout(() => this.gameWin(), 1000);
+      this.timer = setTimeout(() => this.gameWin(), 2000);
     }
     else {
       //haven't won, reset selected cards after a delay
-      this.timer = setTimeout(() => this.resetCards(currentTiles, currentScore, matches), 1000);
+      this.timer = setTimeout(() => this.resetCards(currentTiles, currentScore, matches), 2000);
     }
   }
 }
 
 gameWin() {
-  this.setState({
-    started: false,
-    startingMessage: "You won! Congrats!"
-  });
+  if (this.state.started) {
+    this.setState({
+      started: false,
+      startingMessage: "You won! Congrats!"
+    });
+    clearInterval(this.timer);
+    }
   }
 
-
   //Called after X seconds from handleClick to allow user to see selection before resetting
-  resetCards(currentTiles, currentScore, matches) {
+resetCards(currentTiles, currentScore, matches) {
     this.setState({
       tiles: currentTiles,
       firstCard: "",
@@ -172,23 +196,29 @@ gameWin() {
     clearInterval(this.timer);
   }
 
-  render() {
+render() {
     let clickMethod = this.handleClick;
+    let cardImages = this.state.cardImages;
+    let cardBack = this.state.cardBack;
     if (this.state.started) {
     return (
       <div>
       <h2>Score: {this.state.score}</h2><br />
       <div className="MemoryBoard">
       {this.state.tiles.map(function(item, i) {
-        return <MemoryTile index={item.index} value={item.value} marked={item.marked} handleClick={clickMethod} />;
+        return <MemoryTile index={item.index} value={item.value} marked={item.marked} handleClick={clickMethod} frontImage={cardImages[item.value]} backImage={cardBack[item.cardBack]}/>;
       })}
       </div></div>
     );}
     else {
       return (
         <div>
+        <form onSubmit={this.startGame}>
         <h2>{this.state.startingMessage}</h2>
-        <button onClick={this.startGame}>Start New Game</button>
+        <label htmlFor="inputNumMatches">Number of matches (2-13):</label><br />
+        <input type="text" id="inputNumMatches" value={this.state.value} onChange={this.handleChange} required/>
+        <input type="submit" value="Start Game" />
+        </form>
         </div>
       )
     }
