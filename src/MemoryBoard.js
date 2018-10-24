@@ -6,7 +6,7 @@ class MemoryBoard extends Component {
     super(props);
     this.state = {
       tiles: [],
-      numTiles: 4, //default tiles
+      numTiles: 8, //default tiles
       started: false, //has game started
       startingMessage: "Match the pairs to win!",
       score: 0,
@@ -31,24 +31,21 @@ class MemoryBoard extends Component {
     this.timer = null;
   }
 
-  handleChange(e) {
+handleChange() {
+    let checked = this.state.value;
+    if (this.state.value != "checked") checked = "checked";
+    else checked = "";
     this.setState({
-      value: e.target.value
+      value: checked
     });
   }
 
-  startGame(e) {
+startGame(e) {
     e.preventDefault();
-    if (isNaN(this.state.value) || this.state.value < 2 || this.state.value > 13)
-    {
-      this.setState({
-        value: "",
-        startingMessage: "Please enter a number between 2 and 13."
-      });
-    }
-    else {
-      let numTiles = parseInt(this.state.value) * 2;
-      this.setState({
+    let isChecked = this.state.value;
+    let numTiles = this.state.numTiles;
+    if (isChecked == "checked") numTiles *= 2;
+    this.setState({
         tiles: [],
         numTiles: numTiles,
         score: 0,
@@ -59,8 +56,7 @@ class MemoryBoard extends Component {
         matches: 0
       });
       this.createBoard(numTiles);
-    }
-  }
+}
 
   //Accept an even number and create a random board of tiles with matching pairs
   createBoard(val) {
@@ -214,10 +210,13 @@ render() {
       return (
         <div>
         <form onSubmit={this.startGame}>
-        <h2>{this.state.startingMessage}</h2>
-        <label htmlFor="inputNumMatches">Number of matches (2-13):</label><br />
-        <input type="text" id="inputNumMatches" value={this.state.value} onChange={this.handleChange} required/>
-        <input type="submit" value="Start Game" />
+        <h2>{this.state.startingMessage}</h2><br/>
+        <p>Hard Mode:</p>
+        <label className="switch">
+        <input type="checkbox" onChange={this.handleChange} checked={this.state.value}/>
+        <span className="slider round"></span>
+        </label><br /><br />
+        <input id="buttonSubmit" type="submit" value="Start Game" />
         </form>
         </div>
       )
