@@ -6,7 +6,14 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: black;
+  background    : #3a5d96;
+  background    : repeating-linear-gradient(
+                  90deg,
+                  #3a5d96,
+                  #3a5d96 10px,
+                  #4c6896 10px,
+                  #4c6896 20px
+                );
   color: white;
 
 }

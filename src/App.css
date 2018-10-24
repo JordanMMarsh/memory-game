@@ -3,6 +3,11 @@
   text-align: center;
 }
 
+.MemoryGame {
+  height: 100vh;
+  width: 100vw;
+}
+
 .MemoryBoard {
   display: flex;
   flex-wrap: wrap;
