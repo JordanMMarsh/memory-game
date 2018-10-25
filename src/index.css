@@ -15,7 +15,7 @@ body {
                   #4c6896 20px
                 );
   color: white;
-
+overflow-x: hidden;
 }
 
 code {

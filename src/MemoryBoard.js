@@ -6,7 +6,7 @@ class MemoryBoard extends Component {
     super(props);
     this.state = {
       tiles: [],
-      numTiles: 8, //default tiles
+      numTiles: 8, //default easy mode tiles
       started: false, //has game started
       startingMessage: "Match the pairs to win!",
       score: 0,
@@ -15,7 +15,7 @@ class MemoryBoard extends Component {
       secondCard: "",
       secondCardIndex: "",
       matches: 0,
-      value: "",
+      value: false,
       cardImages: ["../images/AC.png","../images/2C.png","../images/3C.png","../images/4C.png","../images/5C.png","../images/6C.png","../images/7C.png","../images/8C.png","../images/9C.png","../images/10C.png","../images/JC.png","../images/QC.png","../images/KC.png","../images/AS.png","../images/2S.png","../images/3S.png","../images/4S.png","../images/5S.png","../images/6S.png","../images/7S.png","../images/8S.png","../images/9S.png","../images/10S.png","../images/JS.png",
       "../images/QS.png","../images/KS.png","../images/2D.png","../images/3D.png","../images/4D.png","../images/5D.png","../images/6D.png","../images/7D.png","../images/8D.png","../images/9D.png","../images/10D.png","../images/JD.png","../images/QD.png","../images/KD.png","../images/AH.png","../images/2H.png","../images/3H.png","../images/4H.png","../images/5H.png","../images/6H.png","../images/7H.png","../images/8H.png","../images/9H.png","../images/10H.png",
       "../images/JH.png","../images/QH.png","../images/KH.png"],
@@ -32,22 +32,15 @@ class MemoryBoard extends Component {
   }
 
 handleChange() {
-    let checked = this.state.value;
-    if (this.state.value != "checked") checked = "checked";
-    else checked = "";
     this.setState({
-      value: checked
+      value: !this.state.value
     });
   }
 
 startGame(e) {
     e.preventDefault();
-    let isChecked = this.state.value;
-    let numTiles = this.state.numTiles;
-    if (isChecked == "checked") numTiles *= 4;
     this.setState({
         tiles: [],
-        numTiles: numTiles,
         score: 0,
         firstCard: "",
         firstCardIndex: "",
@@ -55,12 +48,13 @@ startGame(e) {
         secondCardIndex: "",
         matches: 0
       });
-      this.createBoard(numTiles);
+      this.createBoard();
 }
 
   //Accept an even number and create a random board of tiles with matching pairs
-  createBoard(val) {
-    let numberTiles = val;
+  createBoard() {
+    let numberTiles = this.state.numTiles;
+    if (this.state.value) numberTiles *= 4;
     let newTiles = [];
     let randomNumbers = [];
 
@@ -169,7 +163,7 @@ componentDidUpdate() {
 }
 
 gameWin() {
-  if (this.state.started) {
+  if (this.state.started && this.state.matches != 0) {
     this.setState({
       started: false,
       startingMessage: "You won! Congrats!"
@@ -196,6 +190,8 @@ render() {
     let clickMethod = this.handleClick;
     let cardImages = this.state.cardImages;
     let cardBack = this.state.cardBack;
+    let isChecked;
+    this.state.value ? isChecked = "checked" : isChecked = "";
     if (this.state.started) {
     return (
       <div>
@@ -213,7 +209,7 @@ render() {
         <h2>{this.state.startingMessage}</h2><br/>
         <p>Hard Mode:</p>
         <label className="switch">
-        <input type="checkbox" onChange={this.handleChange} checked={this.state.value}/>
+        <input type="checkbox" onChange={this.handleChange} checked={isChecked}/>
         <span className="slider round"></span>
         </label><br /><br />
         <input id="buttonSubmit" type="submit" value="Start Game" />
