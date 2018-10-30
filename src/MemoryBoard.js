@@ -16,10 +16,10 @@ class MemoryBoard extends Component {
       secondCardIndex: "",
       matches: 0,
       value: false,
-      cardImages: ["../images/AC.png","../images/2C.png","../images/3C.png","../images/4C.png","../images/5C.png","../images/6C.png","../images/7C.png","../images/8C.png","../images/9C.png","../images/10C.png","../images/JC.png","../images/QC.png","../images/KC.png","../images/AS.png","../images/2S.png","../images/3S.png","../images/4S.png","../images/5S.png","../images/6S.png","../images/7S.png","../images/8S.png","../images/9S.png","../images/10S.png","../images/JS.png",
-      "../images/QS.png","../images/KS.png","../images/2D.png","../images/3D.png","../images/4D.png","../images/5D.png","../images/6D.png","../images/7D.png","../images/8D.png","../images/9D.png","../images/10D.png","../images/JD.png","../images/QD.png","../images/KD.png","../images/AH.png","../images/2H.png","../images/3H.png","../images/4H.png","../images/5H.png","../images/6H.png","../images/7H.png","../images/8H.png","../images/9H.png","../images/10H.png",
-      "../images/JH.png","../images/QH.png","../images/KH.png"],
-      cardBack: ["../images/purple_back.png","../images/blue_back.png","../images/gray_back.png","../images/red_back.png"],
+      cardImages: ["images/AC.png","images/2C.png","images/3C.png","images/4C.png","images/5C.png","images/6C.png","images/7C.png","images/8C.png","images/9C.png","images/10C.png","images/JC.png","images/QC.png","images/KC.png","images/AS.png","images/2S.png","images/3S.png","images/4S.png","images/5S.png","images/6S.png","images/7S.png","images/8S.png","images/9S.png","images/10S.png","images/JS.png",
+      "images/QS.png","images/KS.png","images/2D.png","images/3D.png","images/4D.png","images/5D.png","images/6D.png","images/7D.png","images/8D.png","images/9D.png","images/10D.png","images/JD.png","images/QD.png","images/KD.png","images/AH.png","images/2H.png","images/3H.png","images/4H.png","images/5H.png","images/6H.png","images/7H.png","images/8H.png","images/9H.png","images/10H.png",
+      "images/JH.png","images/QH.png","images/KH.png"],
+      cardBack: ["images/purple_back.png","images/blue_back.png","images/gray_back.png","images/red_back.png"],
       backIndex: 0
     }
     this.createBoard = this.createBoard.bind(this);
